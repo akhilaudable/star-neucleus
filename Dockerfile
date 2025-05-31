@@ -35,4 +35,5 @@ HEALTHCHECK --interval=30s --timeout=3s \
 
 # Runtime command
 USER node
-CMD ["node", "dist/server.js"]
+
+CMD ["node", "dist/server.js"] 

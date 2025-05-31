@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: builder  # Use builder stage for dev dependencies
+    command: npm run dev  # Override production CMD
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app  # Live code reload
+      - /app/node_modules  # Preserve dependencies
+      - /app/dist  # Preserve build artifacts
+    working_dir: /app

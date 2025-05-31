@@ -1,7 +1,11 @@
 node_modules
-Dockerfile
-.dockerignore
 .git
 .gitignore
 *.md
+.dockerignore
+Dockerfile
+docker-compose.*.yml
 .env
+*.ts
+src/
+tsconfig.json
