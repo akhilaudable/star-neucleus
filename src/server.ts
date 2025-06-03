@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import router from './routes';
-
+import connectDB from './config/db';
 interface HttpError extends Error {
     status?: Number;
     details?: any;
@@ -8,6 +8,9 @@ interface HttpError extends Error {
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+connectDB().catch(err => console.error('Connection error:', err));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
