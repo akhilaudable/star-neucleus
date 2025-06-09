@@ -21,14 +21,23 @@ services:
       - mongodb  # Ensures MongoDB starts first
 
   mongodb:
-    image: mongo:6.0  # Official MongoDB image
+    image: mongo:6.0
     container_name: mongodb
     ports:
-      - "27017:27017"  # Expose default MongoDB port
+      - "27017:27017"
     volumes:
-      - mongodb_data:/data/db  # Persistent data storage
+      - mongodb_data:/data/db  # Persistent volume
+      - ./mongo-init-dev.js:/docker-entrypoint-initdb.d/init.js:ro  # Initialization
     environment:
-      MONGO_INITDB_DATABASE: star-core  # Initialize default database
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_APP_USER: ${MONGO_APP_USER}  # Add to .env
+      MONGO_APP_PASS: ${MONGO_APP_PASS}
+    # healthcheck:  # Critical for dependency management
+    #   test: echo 'db.runCommand("ping").ok' | mongosh -u $$MONGO_INITDB_ROOT_USERNAME -p $$MONGO_INITDB_ROOT_PASSWORD --quiet
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
 
 volumes:
   mongodb_data:  # Named volume for data persistence

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import 'dotenv/config';
-console.log(process.env.MONGODB_URL, 'process.env.MONGODB_URL')
+
 const connectDB = async (): Promise<void> => {
     // Validate environment variable
     const mongoDBUrl = process.env.MONGODB_URL;
