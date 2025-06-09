@@ -1,0 +1,1 @@
+docker inspect mongodb | grep IPAddress  # Get container IP
