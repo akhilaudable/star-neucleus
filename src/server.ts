@@ -40,7 +40,6 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
   // 3. Handle different error types
   const status = Number(err.status ?? 500);
   const message = status >= 500 ? 'Something went wrong!' : err.message;
-  
   // 4. Send error response
   res.status(status).json({
     error: message,

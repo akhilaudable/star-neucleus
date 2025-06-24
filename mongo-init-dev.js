@@ -1,66 +1,49 @@
-// This script runs in the Mongo shell, not Node.js!
 
-const adminDb = db.getSiblingDB("admin");
+// // This script runs in the Mongo shell, not Node.js!
 
-// Authenticate as root (if needed)
-adminDb.auth(
-  _getEnv("MONGO_INITDB_ROOT_USERNAME"),
-  _getEnv("MONGO_INITDB_ROOT_PASSWORD")
-);
+// const adminDb = db.getSiblingDB("admin");
 
-const appDb = db.getSiblingDB("star-core");
-appDb.createUser({
-  user: _getEnv("MONGO_APP_USER"),
-  pwd: _getEnv("MONGO_APP_PASS"),
-  roles: [
-    { role: "readWrite", db: "star-core" },
-    { role: "dbAdmin", db: "star-core" }
-  ]
-});
+// // Authenticate as root (if needed)
+// adminDb.auth(
+//   _getEnv("MONGO_INITDB_ROOT_USERNAME"),
+//   _getEnv("MONGO_INITDB_ROOT_PASSWORD")
+// );
 
-print("✅ MongoDB initialization complete");
+// const appDb = db.getSiblingDB("star-core");
+// appDb.createUser({
+//   user: _getEnv("MONGO_APP_USER"),
+//   pwd: _getEnv("MONGO_APP_PASS"),
+//   roles: [
+//     { role: "readWrite", db: "star-core" },
+//     { role: "dbAdmin", db: "star-core" }
+//   ]
+// });
 
-// Helper to get env vars in Mongo shell init scripts
-function _getEnv(name) {
-  return (typeof _getEnv !== "undefined" && _getEnv[name]) || (typeof process !== "undefined" && process.env && process.env[name]) || "";
+// print("✅ MongoDB initialization complete");
+
+// // Helper to get env vars in Mongo shell init scripts
+// function _getEnv(name) {
+//   return (typeof _getEnv !== "undefined" && _getEnv[name]) || (typeof process !== "undefined" && process.env && process.env[name]) || "";
+// }
+
+// init-mongo.js
+const rootUser = process.env.MONGO_INITDB_ROOT_USERNAME;
+const rootPass = process.env.MONGO_INITDB_ROOT_PASSWORD;
+const appUser = process.env.MONGO_APP_USER;
+const appPass = process.env.MONGO_APP_PASS;
+
+if (!appUser || !appPass) {
+  print("❌ ERROR: MONGO_APP_USER or MONGO_APP_PASS not set");
+  quit(1);
 }
 
-// const db = require('./src/config/db');
-// require('dotenv').config({ path: './.env' });
+const adminDb = db.getSiblingDB("admin");
+adminDb.auth(rootUser, rootPass);
 
-// const initMongoDB = () => {
-//   const env = {
-//     MONGO_INITDB_ROOT_USERNAME:  process.env.MONGO_ROOT_USER,
-//     MONGO_INITDB_ROOT_PASSWORD: process.env.MONGO_ROOT_PASSWORD,
-//   };
-//   process.env.MONGO_APP_USER;
-// process.env.MONGO_APP_PASS;
-//   const adminDb = db.getSiblingDB("admin");
-//   adminDb.auth(env.MONGO_INITDB_ROOT_USERNAME, env.MONGO_INITDB_ROOT_PASSWORD);
-//   const appDb = db.getSiblingDB("star-core");
-//   appDb.createUser({
-//     user: process.env.MONGO_APP_USER,
-//     pwd: process.env.MONGO_APP_PASS,
-//     roles: [
-//       { role: "readWrite", db: "star-core" },
-//       { role: "dbAdmin", db: "star-core" }
-//     ]
-//   });
-// //   const products = [
-// //     { name: "Starter Kit", sku: "SKU-001", price: 49.99, category: "kits" },
-// //     { name: "Pro Bundle", sku: "SKU-002", price: 99.99, category: "kits" },
-// //     { name: "Battery Pack", sku: "SKU-101", price: 19.99, category: "accessories" }
-// //   ];
-// //   appDb.products.insertMany(products);
-// //   appDb.products.createIndex({ sku: 1 }, { unique: true });
-// //   appDb.products.createIndex({ category: 1 });
-//   console.log("✅ MongoDB initialization complete");
-// //   print(`📦 Inserted ${products.length} sample products`);
-// };
+db.getSiblingDB("star-core").createUser({
+  user: 'starcoreuser',
+  pwd: 'startCore',
+  roles: ["readWrite"]
+});
 
-// try {
-//   initMongoDB();
-// } catch (error) {
-//   print(`❌ Initialization failed: ${error}`);
-//   quit(1);
-// }
+print(`✅ Created app user: ${appUser}`);
